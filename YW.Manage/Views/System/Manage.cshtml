@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "后台管理系统 - 系统管理";
+    ViewBag.Module = 5;
+    
+}
+@section Head_Code
+{
+    <script src="@Url.Content("~/Scripts/ShowPages.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        function Upgrade() {
+            dialog = art.dialog.open("/System/Upgrade", {
+                title: "系统升级",
+                height: 200,
+                width: 400,
+                lock: true
+            });
+        }
+    </script>
+}
+<div class="vernav2 iconmenu">
+    <ul>
+        <li><a href="/System/" class="elements">运行情况</a></li>
+        <li><a href="/System/Notification" class="addons">公告推送</a></li>
+        @if (YW.Manage.BLL.Authorize.GetUser().DealerUser.UserType == 3)
+        {
+            <li><a href="/System/Project" class="editor">项目管理</a></li>
+            <li><a href="/System/Manage" class="widgets">系统管理</a></li>
+        }
+    </ul>
+    <a class="togglemenu"></a>
+    <br />
+    <br />
+</div>
+<!--leftmenu-->
+<div class="centercontent">
+    <div id="contentwrapper" class="contentwrapper">
+        <div class="contenttitle2">
+            <h3 style="width: 200px;">
+                系统管理</h3>
+        </div>
+        <!--contenttitle-->
+        <div class="dataTables_wrapper" id="dyntable_wrapper">
+               系统版本：@ViewBag.Version &nbsp;<button class="radius3" onclick="Upgrade('')">
+                    系统升级</button>
+
+           
+        </div>
+    </div>
+    <!-- centercontent -->
+</div>

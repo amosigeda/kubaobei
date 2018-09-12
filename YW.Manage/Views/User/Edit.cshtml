@@ -1,0 +1,160 @@
+﻿@model YW.Model.Entity.DealerUser
+@{
+    ViewBag.Title = "后台管理系统 - 用户管理";
+    Layout = "~/Views/Shared/_LayoutForPop.cshtml";
+    ViewBag.Module = 2;
+    
+}
+@section Head_Code
+{
+    <script type="text/javascript">
+        $(function() {
+            if (@ViewBag.NameType == "1") {
+                document.getElementById("txtUserName").disabled = true;
+                document.getElementById("selUserType").disabled = true;
+            };
+            $('#userinfoform').submit(function() {
+                if (CheckTable()) {
+                    var data = $('#userinfoform').serialize();
+                    $.ajax({
+                        url: this.action,
+                        type: "Post",
+                        data: data,
+                        success: function(data) {
+                            if (data) {
+                                if (data.Result == 1) {
+                                    window.top.art.dialog.alert(data.Message, function() {
+                                        var origin = artDialog.open.origin;
+                                        origin.reload();
+                                        origin.dialog.time(0.1);
+                                        return true;
+                                    });
+                                } else {
+                                    ShowError(data);
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                return false;
+            });
+        });
+
+        function CloseOpen() {
+            art.dialog.close();
+        };
+
+        //页面判断
+        function CheckTable() {
+            var name = $("#txtName");
+            var username = $("#txtUserName");
+            if (username.val() == "") {
+                username.focus();
+                ShowError({ Result: 0, Message: "用户名称不能为空！" });
+                return false;
+            }
+            if (name.val() == "") {
+                name.focus();
+                ShowError({ Result: 0, Message: "用户姓名不能为空！" });
+                return false;
+            }
+
+
+            if (!PassWord()) {
+                return false;
+            }
+            return true;
+        };
+
+        //密码确认
+        function PassWord() {
+            var pass = $("#txtPassword");
+            var passtwo = $("#txtConfirmPassword");
+            if (pass.val() != "") {
+                if (passtwo.val() == "") {
+                    passtwo.focus();
+                    ShowError({ Result: 0, Message: "确认密码不能为空！" });
+                    return false;
+                } else {
+                    if (passtwo.val() != pass.val()) {
+                        passtwo.focus();
+                        ShowError({ Result: 0, Message: "确认密码与登录密码不一致！" });
+                        return false;
+                    }
+                }
+            }
+            return true;
+        };
+    </script>
+}
+<div class="centercontent">
+    <div class="contentwrapper" id="contentwrapper">
+        <div class="subcontent" id="validation" style="display: block;">
+            @using (Html.BeginForm("Edit", "User", FormMethod.Post,
+                    new { name = "userinfoform", id = "userinfoform", @class = "stdform" }))
+            {
+                @Html.HiddenFor(u => u.DealerUserId)
+                @Html.HiddenFor(u => u.DealerId)
+                <p>
+                    <label>
+                        用户名称</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.UserName, new { @id = "txtUserName", @name = "UserName", @class = "longinput" })
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        登录密码</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.Password, new { id = "txtPassword", type = "password", name = "Password", Value = "", @class = "longinput" })
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        确认密码</label>
+                    <span class="field">
+                        <input name="confirmpasword" id="txtConfirmPassword" class="longinput" type="password" /></span>
+                </p>
+                <p>
+                    <label>
+                        用户类型</label>
+                    <span class="field">
+                        <select name="UserType" id="selUserType">
+                            <option value="1" @(Model.UserType == 1 ? " selected=\"selected\"" : "")>普通用户</option>
+                            <option value="2" @(Model.UserType == 2 ? " selected=\"selected\"" : "")>管理员</option>
+                           @if (ViewBag.User.DealerUser.UserType == 3)
+                           {
+                               <option value="3" @(Model.UserType == 3 ? " selected=\"selected\"" : "")>系统管理员</option>
+                           }
+                        </select>
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        用户姓名</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.Name, new { @id = "txtName", @name = "Name", @class = "longinput" })
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        联系电话</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.PhoneNumber, new { @id = "txtPhoneNumber", @name = "PhoneNumber", @class = "longinput" })</span>
+                </p>
+                <p>
+                    <label>
+                        备注</label>
+                    <span class="field">@Html.TextAreaFor(u => u.Remark, new { id = "txtRemark", name = "Remark", @class = "mediuminput" })</span>
+                </p>
+                <p class="stdformbutton">
+                    <button class="submit radius2" style="margin-left: 20px;">
+                        提交</button>
+                </p>
+            }
+        </div>
+        <!--subcontent-->
+    </div>
+    <!--contentwrapper-->
+</div>

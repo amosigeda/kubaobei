@@ -1,0 +1,167 @@
+﻿@model YW.Model.Entity.Project
+@{
+    ViewBag.Title = "后台管理系统 - 系统管理";
+    Layout = "~/Views/Shared/_LayoutForPop.cshtml";
+    ViewBag.Module = 2;
+    
+}
+@section Head_Code
+{
+    <script type="text/javascript">
+        $(function() {
+            if (@ViewBag.NameType == "1") {
+                document.getElementById("txtProjectId").readOnly = "readOnly";
+            };
+            $('#infoform').submit(function() {
+                if (CheckTable()) {
+                    var data = $('#infoform').serialize();
+                    $.ajax({
+                        url: this.action,
+                        type: "Post",
+                        data: data,
+                        success: function(data) {
+                            if (data) {
+                                if (data.Result == 1) {
+                                    window.top.art.dialog.alert(data.Message, function() {
+                                        var origin = artDialog.open.origin;
+                                        origin.reload();
+                                        origin.dialog.time(0.1);
+                                        return true;
+                                    });
+                                } else {
+                                    ShowError(data);
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                return false;
+            });
+        });
+
+        function CloseOpen() {
+            art.dialog.close();
+        };
+
+        //页面判断
+        function CheckTable() {
+            var name = $("#txtName");
+            if (name.val() == "") {
+                name.focus();
+                ShowError({ Result: 0, Message: "名称不能为空！" });
+                return false;
+            }
+
+            return true;
+        };
+
+      
+    </script>
+}
+<div class="centercontent">
+    <div class="contentwrapper" id="contentwrapper">
+        <div class="subcontent" id="validation" style="display: block;">
+            @using (Html.BeginForm("EditProject", "System", FormMethod.Post,
+                    new { name = "infoform", id = "infoform", @class = "stdform" }))
+            {
+
+                <p>
+                    <label>
+                        编号</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.ProjectId, new { @id = "txtProjectId", @name = "ProjectId", @class = "longinput" })
+                        <span style="color:red">*</span>
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        名称</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.Name, new { @id = "txtName", @name = "Name", @class = "longinput" })
+                        <span style="color:red">*</span>
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        短信Key</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.SMSKey, new { @id = "txtSMSKey", @name = "SMSKey", @class = "longinput" })
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        注册模板</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.SMSReg, new { @id = "txtSMSReg", @name = "SMSReg", @class = "longinput" })
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        找回密码模板</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.SMSForgot, new { @id = "txtSMSForgot", @name = "SMSForgot", @class = "longinput" })
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        Android版本号</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.AndroidVersion, new { @id = "txtAndroidVersion", @name = "AndroidVersion", @class = "longinput" })
+                        <span style="color:red">*</span>
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        Android更新地址</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.AndroidUrl, new { @id = "txtAndroidUrl", @name = "AndroidUrl", @class = "longinput" })
+                        <span style="color:red">*</span>
+                    </span>
+                </p>
+                 <p>
+                    <label>
+                        Android更新描述</label>
+                    <span class="field">
+                        @Html.TextAreaFor(u => u.AndroidDescription, new { @id = "txtAndroidDescription", @name = "AndroidDescription", @class = "longinput",@cols="80",@rows="8" })
+                        <span style="color:red">*</span>
+                    </span>
+                </p>
+                                <p>
+                    <label>
+                        Apple版本号</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.AppleVersion, new { @id = "txtAppleVersion", @name = "AppleVersion", @class = "longinput" })
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        Apple更新地址</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.AppleUrl, new { @id = "txtAppleUrl", @name = "AppleUrl", @class = "longinput" })
+                    </span>
+                </p>
+                 <p>
+                    <label>
+                        Apple更新描述</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.AppleDescription, new { @id = "txtAppleDescription", @name = "AppleDescription", @class = "longinput" })
+                    </span>
+                </p>
+                                 <p>
+                    <label>
+                        广告(格式:图片,链接 链接可以为空 多个以"|"分隔 例:图片,|图片,链接)</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.AD, new { @id = "txtAD", @name = "AD", @class = "longinput" })
+                    </span>
+                </p>
+                <p class="stdformbutton">
+                    <button class="submit radius2" style="margin-left: 20px;">
+                        提交</button>
+                </p>
+            }
+        </div>
+        <!--subcontent-->
+    </div>
+    <!--contentwrapper-->
+</div>

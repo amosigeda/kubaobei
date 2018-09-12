@@ -1,0 +1,133 @@
+﻿@model YW.Model.Entity.Device
+@{
+    ViewBag.Title = "后台管理系统 - 设备管理";
+    Layout = "~/Views/Shared/_LayoutForPop.cshtml";
+    ViewBag.Module = 2;
+    
+}
+@section Head_Code
+{
+    <script type="text/javascript">
+        $(function() {
+        
+            document.getElementById("txtSerialNumber").disabled = true;
+            if (@ViewBag.EditEnable == 0) {
+                document.getElementById("txtBindNumber").disabled = true;
+                document.getElementById("txtModel").disabled = true;
+            };
+            $('#deviceinfoform').submit(function() {
+                if (CheckTable()) {
+                    var data = $('#deviceinfoform').serialize();
+                    $.ajax({
+                        url: this.action,
+                        type: "Post",
+                        data: data,
+                        success: function(data) {
+                            if (data) {
+                                if (data.Result == 1) {
+                                    window.top.art.dialog.alert(data.Message, function() {
+                                        var origin = artDialog.open.origin;
+                                        origin.reload();
+                                        origin.dialog.time(0.1);
+                                        return true;
+                                    });
+                                } else {
+                                    ShowError(data);
+                                }
+                            }
+                        }
+                    });
+                }
+                
+                return false;
+            });
+        });
+
+        function CloseOpen() {
+            art.dialog.close();
+        };
+
+        //页面判断
+        function CheckTable() {
+            var bindNumber = $("#txtBindNumber");
+            if (bindNumber.val() == "") {
+                bindNumber.focus();
+                ShowError({ Result: 0, Message: "绑定号不能为空！" });
+                return false;
+            }
+            return true;
+        };
+
+        
+    </script>
+}
+<div class="centercontent">
+    <div class="contentwrapper" id="contentwrapper">
+        <div class="subcontent" id="validation" style="display: block;">
+            @using (Html.BeginForm("Edit", "Device", FormMethod.Post,
+                    new { name = "deviceinfoform", id = "deviceinfoform", @class = "stdform" }))
+            {
+                @Html.HiddenFor(u => u.DeviceID)
+                <p>
+                    <label>
+                        设备编号</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.SerialNumber, new { @id = "txtSerialNumber", @name = "SerialNumber", @class = "longinput" })
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        绑定号</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.BindNumber, new { @id = "txtBindNumber", @name = "BindNumber", @class = "longinput" })
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        手机号</label>
+                    <span class="field">
+                        @Html.TextBoxFor(u => u.PhoneNumber, new { @id = "txtPhoneNumber", @name = "PhoneNumber", @class = "longinput" })
+                    </span>
+                </p>
+                <p>
+                    <label>设备类型<br>(多选)</label>
+                    <span class="field">
+                        <select name="DeviceType" id="txtDeviceType" size="8" multiple="multiple">
+                            <option value="1"@((Model.DeviceType&1)==  1 ? " selected=\"selected\"" : "")>儿童定位手表</option>
+                            <option value="2"@((Model.DeviceType&2)==  2 ? " selected=\"selected\"" : "")>定位器</option>
+                            <option value="4"@((Model.DeviceType&4)==  4 ? " selected=\"selected\"" : "")>宠物定位</option>
+                            <option value="8"@((Model.DeviceType&8)==  8 ? " selected=\"selected\"" : "")>自行车定位</option>
+                            <option value="16"@((Model.DeviceType&16)==  16 ? " selected=\"selected\"" : "")>汽车定位</option>
+                            <option value="32"@((Model.DeviceType&32)==  32 ? " selected=\"selected\"" : "")>机器人</option>
+                        </select>
+                    </span>
+                </p>
+                <p>
+                    <label>设备功能(多选)</label>
+                    <span class="field">
+                        <select name="Model" id="txtModel" size="3" multiple="multiple">
+                            <option value="1"@((Model.DeviceModelID&1)==  1 ? " selected=\"selected\"" : "")>防脱落报警</option>
+                            <option value="2"@((Model.DeviceModelID&2)==  2 ? " selected=\"selected\"" : "")>真人头像</option>
+                            <option value="4"@((Model.DeviceModelID&4)==  4 ? " selected=\"selected\"" : "")>摄像头拍照</option>
+                        </select>
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        设备备注
+                    </label>
+                    <span class="field">
+                        @Html.TextAreaFor(u => u.DeviceNote,5,50,new { @id = "txtDeviceNote", @name = "DeviceNote", @class = "mediuminput" })
+                    </span>
+                </p>
+
+                <p class="stdformbutton">
+                    <button class="submit radius2" style="margin-left: 20px;">
+                        提交</button>
+                </p>
+            }
+        </div>
+        <!--subcontent-->
+    </div>
+    <!--contentwrapper-->
+</div>

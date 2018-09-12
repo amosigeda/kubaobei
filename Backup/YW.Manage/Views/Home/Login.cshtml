@@ -1,0 +1,89 @@
+﻿@model YW.Manage.Models.Login
+@{
+    ViewBag.Title = "系统登录";
+    Layout = null;
+}
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/Content/style.default.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/plugins/jquery-1.7.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jquery-ui-1.8.16.custom.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jquery.cookie.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jquery.uniform.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jquery.flot.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jquery.flot.resize.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jquery.slimscroll.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        function keyLogin() {
+            if (event.keyCode == 13)   //回车键的键值为13   
+                document.getElementById("btnLogin").click(); //调用登录按钮的登录事件   
+        }
+        function doLogin() {
+
+            var server = $("#server").val();
+            var username = $("#username").val();
+            var password = $("#password").val();
+            $("#loginmsg").hide();
+            $.ajax({
+                url: "/Home/Login",
+                type: "Post",
+                data: "{'server':'" + server + "','username':'" + username + "','password':'" + password + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    if (data) {
+                        if (data.Result == 0) {
+                            //alert();
+                            $("#errormsg").html(data.Message);
+                            $("#loginmsg").fadeIn();
+
+                        }
+                        else {
+                            window.location.href = "/";
+                        }
+                    }
+                }
+            });
+            return false;
+        }
+    </script>
+</head>
+<body class="loginpage">
+    @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { id = "login", onsubmit = "return false;" }))
+    {
+        <div class="loginbox">
+            <div class="loginboxinner" onkeydown="keyLogin();">
+                <div class="logo">
+                    <h1 class="logo">
+                        <span>后台管理系统</span></h1>
+                    <span class="slogan"></span>
+                </div>
+                <div class="loginmsg" id="loginmsg">
+                    <div class="errormsg" id="errormsg">
+                    </div>
+                </div>
+                <div class="server" style="display: none">
+                    <div class="serverinner">
+                        <input type="text" name="server" id="server" value="127.0.0.1"  placeholder="服务器" />
+                    </div>
+                </div>
+                <div class="username">
+                    <div class="usernameinner">
+                        <input type="text" name="username" id="username" value="@Model.UserName"  placeholder="用户名" />
+                    </div>
+                </div>
+                <div class="password">
+                    <div class="passwordinner">
+                        <input type="password" name="password" id="password" value="@Model.PassWord"  placeholder="密码" />
+                    </div>
+                </div>
+                <button id="btnLogin" onclick="doLogin()">
+                    登录</button>
+            </div>
+        </div>
+    }
+</body>
+</html>

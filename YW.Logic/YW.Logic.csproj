@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{4B3D0527-19E1-4E3C-9764-44CB94CD63F3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>YW.Logic</RootNamespace>
+    <AssemblyName>YW.Logic</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Api.Contracts">
+      <HintPath>..\DLL\Api.Contracts.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=106.3.1.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.3.1\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AgentNumber.cs" />
+    <Compile Include="APIClient.cs" />
+    <Compile Include="Base.cs" />
+    <Compile Include="DeviceFriend.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="WifiData.cs" />
+    <Compile Include="DeviceTq.cs" />
+    <Compile Include="YWLBS.cs" />
+    <Compile Include="Count.cs" />
+    <Compile Include="DeviceContact.cs" />
+    <Compile Include="DeviceException.cs" />
+    <Compile Include="DeviceSet.cs" />
+    <Compile Include="DeviceSMS.cs" />
+    <Compile Include="DeviceVoice.cs" />
+    <Compile Include="FeedBack.cs" />
+    <Compile Include="GeoFence.cs" />
+    <Compile Include="LBSWIFIClient.cs" />
+    <Compile Include="Notification.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SchoolGuardian.cs" />
+    <Compile Include="SMS.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="Device.cs" />
+    <Compile Include="DeviceState.cs" />
+    <Compile Include="UserDevice.cs" />
+    <Compile Include="Project.cs" />
+    <Compile Include="Dealer.cs" />
+    <Compile Include="DealerUser.cs" />
+    <Compile Include="DealerDevice.cs" />
+    <Compile Include="DealerNotification.cs" />
+    <Compile Include="DevicePhoto.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YW.Data\YW.Data.csproj">
+      <Project>{3826B9E8-72CD-4859-9DEA-B204E8784DAB}</Project>
+      <Name>YW.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YW.Model\YW.Model.csproj">
+      <Project>{7BF5DD71-6AAA-47E4-B2DC-838C5D1A610E}</Project>
+      <Name>YW.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YW.Notification\YW.Notification.csproj">
+      <Project>{C9EEAF71-8685-4F3A-96AE-6167A6B59086}</Project>
+      <Name>YW.Notification</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\YW.Utility\YW.Utility.csproj">
+      <Project>{1FCBE329-FFCB-44DF-81F2-0D00872EE975}</Project>
+      <Name>YW.Utility</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

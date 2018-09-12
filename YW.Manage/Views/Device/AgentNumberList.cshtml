@@ -1,0 +1,267 @@
+﻿@{
+    ViewBag.Title = "后台管理系统";
+    ViewBag.Module = 1;
+}
+
+@section Head_Code
+{
+    <script src="@Url.Content("~/Scripts/ShowPages.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        var pageindex = 1;
+        var pagesize = 30;
+        var count = 0;
+        var pagecount = 0;
+        var pg = new ShowPages('pg', loadData);
+
+        var dialog;
+        var midNumber = "", platform = 0;
+        var searchtype = 0;
+        $(function() {
+            reload();
+        });
+
+        function loadData(page) {
+            pageindex = page;
+            reload();
+        }
+
+        function Search() {
+            pageindex = 1;
+            searchtype = 1;
+            reload();
+        };
+
+        function reload() {
+            midNumber = $("#midNumber").val();
+            platform = $("#cloudPlatform").val();
+            getList(pageindex, pagesize, midNumber, platform);
+        }
+
+        function getList(pageindex, pagesize, midNumber, platform) {
+            $.ajax({
+                url: "/Device/AgentNumberList",
+                type: "Post",
+                data: "{'pageindex':'" + pageindex + "','pagesize':'" + pagesize + "','midNumber':'" + midNumber + "','platform':'" + platform + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+                    if (data) {
+                        if (data.Result == 1) {
+                            count = data.Count;
+                            pagecount = count % pagesize == 0 ? count / pagesize : Math.floor(count / pagesize) + 1; //根据记录条数，计算页数
+                            if (pagecount < pageindex && pagecount > 0) {
+                                pageindex = pagecount;
+                                getList(pageindex, pagesize, midNumber, platfrom);
+                            }
+                            var strHtml = "";
+                            for (var i = 0; i < data.List.length; i++) {
+                                strHtml += "<tr onmouseenter=\"tronmouseenter(this);\" onmouseleave=\"tronmouseleave(this);\">";
+                                strHtml += " <td>" + data.List[i].Number + "</td>";
+                                strHtml += " <td>" + data.List[i].CallOutNumber + "</td>";
+                                strHtml += "<td>";
+                                switch (data.List[i].Platform) {
+                                case 0:
+                                    strHtml += "无";
+                                    break;
+                                case 1:
+                                    strHtml += "第二组";
+                                    break;
+                                case 2:
+                                    strHtml += "第一组";
+                                    break;
+                                case 3:
+                                    strHtml += "第三组";
+                                    break;
+                                case 4:
+                                    strHtml += "第四组";
+                                    break;
+                                case 5:
+                                    strHtml += "第五组";
+                                    break;
+                                case 6:
+                                    strHtml += "第六组";
+                                    break;
+                                case 7:
+                                    strHtml += "第七组";
+                                    break;
+                                case 8:
+                                    strHtml += "第八组";
+                                    break;
+                                case 9:
+                                    strHtml += "第九组";
+                                    break;
+                                case 10:
+                                    strHtml += "第十组";
+                                    break;
+                                }
+                                strHtml += "</td>";
+                                strHtml += "<td>"+getDateTime(data.List[i].CreateTime)+"</td>";
+                                strHtml += "<td><a class=\"del\" href=\"javascript:void(0);\" onclick=\"Del(" + data.List[i].Number+","+ data.List[i].Number + ");\">删除</a>";
+                                strHtml += "</td></tr>";
+                            }
+
+                            $("#list_content").html(strHtml);
+                            pg.pageCount = pagecount; // 定义总页数(必要)
+                            pg.page = pageindex;
+                            $("#dyntable_paginate").html(pg.getHtml());
+                        } else {
+                            art.dialog({
+                                title: '提示',
+                                content: data.Message,
+                                icon: 'warning',
+                                lock: true,
+                                ok: true
+                            });
+                        }
+                    }
+                }
+            });
+        };
+
+        function Edit(id) {
+
+            dialog = art.dialog.open("/Device/AgentNumberEdit?DeviceId=" + id,
+                {
+                    title: '@(YW.Manage.BLL.Authorize.GetUser().Dealer.DealerType >= 3 ? "编辑设备" : "查看设备")',
+                    height: 600,
+                    width: 500,
+                    lock: true
+                });
+        }
+
+        function Del(id, name) {
+            art.dialog({
+                title: '提示',
+                content: '你确定要删除' + name + '吗?',
+                icon: 'warning',
+                lock: true,
+                ok: function() {
+                    $.ajax({
+                        type: "Post",
+                        url: "/Device/AgentNumberDel",
+                        data: "{'number':'" + id + "'}",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(data) {
+                            if (data.Result == 1) {
+                                reload();
+                            } else {
+                                art.dialog({
+                                    title: '提示',
+                                    content: data.Message,
+                                    icon: 'warning',
+                                    lock: true,
+                                    ok: true
+                                });
+                            }
+                        },
+                        error: function(ex) {
+                            art.dialog({
+                                title: '提示',
+                                content: ex.responseText,
+                                icon: 'warning',
+                                lock: true,
+                                ok: true
+                            });
+                        }
+                    });
+                },
+                cancel: true
+            });
+
+
+        }
+
+    </script>
+}
+
+<div class="vernav2 iconmenu">
+    <ul>
+        <li>
+            <a href="/" class="elements">设备列表</a>
+        </li>
+        @if (YW.Manage.BLL.Authorize.GetUser().Dealer.DealerType > 2)
+        {
+            <li>
+                <a href="/Device/Add" class="editor">导入设备</a>
+            </li>
+            <li>
+                <a href="/Device/AgentNumberList" class="elements">中间号</a>
+            </li>
+            <li>
+                <a href="/Device/AgentNumberEdit" class="editor">导入中间号</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="/Device/Stock" class="editor">设备入库</a>
+            </li>
+        }
+        <li>
+            <a href="/Device/Sales" class="addons">销售设备</a>
+        </li>
+        @*        <li><a href="/Device/Add" class="support">售后服务</a></li>*@
+    </ul>
+    <a class="togglemenu"></a>
+    <br/>
+    <br/>
+</div>
+<!--leftmenu-->
+<div class="centercontent">
+    <div id="contentwrapper" class="contentwrapper">
+        <div class="contenttitle2">
+            <h3 style="width: 200px;">
+                中间号列表
+            </h3>
+        </div>
+        <!--contenttitle-->
+        <div class="dataTables_wrapper" id="dyntable_wrapper">
+            <div class="tableoptions">
+                <input type="text" placeholder="中间号" id="midNumber" style="width: 120px">
+                &nbsp;
+                <select name="cloudPlatform" id="cloudPlatform">
+                    <option value="0">无</option>
+                    <option value="1">电信</option>
+                    <option value="2">移动</option>
+                    <option value="3">联通</option>
+                    <option value="4">其它</option>
+                </select>
+                &nbsp;
+                <button class="radius3" onclick="Search()">搜索</button>
+            </div>
+            <!--tableoptions-->
+            <table cellpadding="0" cellspacing="0" border="0" id="dyntable" class="stdtable stdtablecb">
+                <colgroup>
+                    <col class="con0"/>
+                    <col class="con1"/>
+                    <col class="con0"/>
+                </colgroup>
+                <thead>
+                <tr>
+                    <th class="head0">
+                        呼入中间号
+                    </th>
+                    <th class="head0">
+                        呼出中间号
+                    </th>
+                    <th class="head1">
+                        平台
+                    </th>
+                    <th class="head0">
+                        时间
+                    </th>
+                    <th class="head1">
+                        操作
+                    </th>
+                </tr>
+                </thead>
+                <tbody id="list_content">
+                </tbody>
+            </table>
+            <div class="dataTables_paginate paging_full_numbers" id="dyntable_paginate">
+            </div>
+        </div>
+    </div>
+    <!-- centercontent -->
+</div>

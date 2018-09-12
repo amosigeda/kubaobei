@@ -1,0 +1,491 @@
+﻿@{
+    ViewBag.Title = "后台管理系统";
+    ViewBag.Module = 1;
+}
+@section Head_Code
+{
+    <script src="@Url.Content("~/Scripts/ShowPages.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        var pageindex = 1;
+        var pagesize = 15;
+        var count = 0;
+        var pagecount = 0;
+        var pg = new ShowPages('pg', loadData);
+
+        var dialog;
+        var serialNumber, model, status, active;
+        var searchtype = 0;
+        $(function() {
+            reload();
+        });
+
+        function loadData(page) {
+            pageindex = page;
+            reload();
+        }
+
+        function Search() {
+            pageindex = 1;
+            searchtype = 1;
+            reload();
+        };
+
+        function reload() {
+            if (searchtype == 1) {
+                serialNumber = $("#serialNumber").val();
+                model = $("#model").val();
+                status = $("#status").val();
+                active = $("#active").val();
+                getList(pageindex, pagesize, serialNumber, model, status, active);
+            } else {
+                getList(pageindex, pagesize, "", "", "", "");
+            }
+        }
+
+        function getList(pageindex, pagesize, serialNumber, model, status, active) {
+            $.ajax({
+                url: "/Device/GetList",
+                type: "Post",
+                data: "{'pageindex':'" + pageindex + "','pagesize':'" + pagesize + "','serialNumber':'" + serialNumber + "','model':'" + model + "','status':'" + status + "','active':'" + active + "'}",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+                    if (data) {
+                        if (data.Result == 1) {
+                            count = data.Count;
+                            pagecount = count % pagesize == 0 ? count / pagesize : Math.floor(count / pagesize) + 1; //根据记录条数，计算页数
+                            if (pagecount < pageindex && pagecount > 0) {
+                                pageindex = pagecount;
+                                getList(pageindex, pagesize, sn, number);
+                            }
+                            var strHtml = "";
+                            for (var i = 0; i < data.List.length; i++) {
+                                strHtml += "<tr onmouseenter=\"tronmouseenter(this);\" onmouseleave=\"tronmouseleave(this);\">";
+                                strHtml += " <td>" + data.List[i].SerialNumber + "</td>";
+                                strHtml += "<td>";
+                                switch (data.List[i].DeviceModelID) {
+                                case 0:
+                                    strHtml += "000";
+                                    break;
+                                case 1:
+                                    strHtml += "001";
+                                    break;
+                                case 2:
+                                    strHtml += "010";
+                                    break;
+                                case 3:
+                                    strHtml += "011";
+                                    break;
+                                case 4:
+                                    strHtml += "100";
+                                    break;
+                                case 5:
+                                    strHtml += "101";
+                                    break;
+                                case 6:
+                                    strHtml += "110";
+                                    break;
+                                case 7:
+                                    strHtml += "111";
+                                    break;
+                                }
+                                strHtml += "</td><td>";
+                                switch (data.List[i].Status) {
+                                case 0:
+                                    strHtml += "路途";
+                                    break;
+                                case 1:
+                                    strHtml += "入库";
+                                    break;
+                                case 2:
+                                    strHtml += "销售";
+                                    break;
+                                case 3:
+                                    strHtml += "返修";
+                                    break;
+                                case 4:
+                                    strHtml += "换货";
+                                    break;
+                                }
+                                strHtml += "</td>";
+                                strHtml += "<td>" + (data.List[i].StockTime == null ? "" : getDateTime(data.List[i].StockTime)) + "</td>";
+                                strHtml += "<td>" + (data.List[i].SalesTime == null ? "" : getDateTime(data.List[i].SalesTime)) + "</td>";
+                                strHtml += "<td>" + (data.List[i].Purchaser == null ? "" : (data.List[i].Purchaser == 0 ? "零售" : data.List[i].PurchaserName)) + "</td>";
+                                strHtml += "<td>" + data.List[i].UserCount + "</td>";
+                                strHtml += "<td>" + (data.List[i].ActiveDate == null ? "" : getDateTime(data.List[i].ActiveDate)) + "</td>";
+                                strHtml = strHtml + "<td>";
+                                if (data.List[i].Online) {
+                                    strHtml = strHtml + "在线";
+                                } else {
+                                    strHtml = strHtml + "离线";
+                                }
+                                strHtml = strHtml + "</td><td>";
+                                switch (data.List[i].LocationType) {
+                                case 0:
+                                    strHtml += "未定位 ";
+                                    break;
+                                case 1:
+                                    strHtml += "GPS ";
+                                    break;
+                                case 2:
+                                    strHtml += "LBS ";
+                                    break;
+                                case 3:
+                                    strHtml += "WIFI ";
+                                    break;
+                                }
+                                if (data.List[i].DeviceTime != null)
+                                    strHtml += getDateTime(data.List[i].DeviceTime);
+                                strHtml += "</td><td>";
+                                strHtml += "<a class=\"edit\" href=\"javascript:void(0);\" onclick=\"Edit(" + data.List[i].DeviceId + ");\">@(YW.Manage.BLL.Authorize.GetUser().Dealer.DealerType >= 3 ? "编辑" : "查看")</a>";
+                                if (data.List[i].DealerId == @(YW.Manage.BLL.Authorize.GetUser().Dealer.DealerId)) {
+                                    if (data.List[i].Status == 0)
+                                        strHtml += "&nbsp;<a class=\"edit\" href=\"javascript:void(0);\" onclick=\"Stock(" + data.List[i].DeviceId + ",'" + data.List[i].SerialNumber + "');\">入库</a>";
+                                    else if (data.List[i].Status == 1) {
+                                        strHtml += "&nbsp;<a class=\"edit\" href=\"javascript:void(0);\" onclick=\"Sales(" + data.List[i].DeviceId + ",'" + data.List[i].SerialNumber + "');\">销售</a>";
+                                    }
+//                                else if (data.List[i].Status == 2) {
+//                                    strHtml += "&nbsp;<a class=\"edit\" href=\"javascript:void(0);\" onclick=\"Rework(" + data.List[i].DeviceId + ",'" + data.List[i].Device.SerialNumber + "');\">返修</a>";
+//                                }
+                                }
+                                
+                                strHtml += "&nbsp;<a class=\"del\" href=\"javascript:void(0);\" onclick=\"Reset(" + data.List[i].DeviceId + ",'" + data.List[i].SerialNumber + "');\">重置</a>";
+                                if (@(YW.Manage.BLL.Authorize.GetUser().Dealer.DealerType) >= 3)
+                                    strHtml += "&nbsp;<a class=\"del\" href=\"javascript:void(0);\" onclick=\"Del(" + data.List[i].DeviceId + ",'" + data.List[i].SerialNumber + "');\">删除</a>";
+                            strHtml += "</td>";
+                            strHtml += "<td>" + data.List[i].DeviceNote + "</td>";
+
+                            strHtml += "<td>" 
+
+                            var typecount = 8;
+                            while(typecount--!=0)
+                            {
+                                var devicetype = (data.List[i].DeviceType) & (1<<typecount);
+                                switch (devicetype) {
+                                    case 1:
+                                        strHtml += " 儿童定位手表";
+                                        break;
+                                    case 2:
+                                        strHtml += " 定位器";
+                                        break;
+                                    case 4:
+                                        strHtml += " 宠物定位";
+                                        break;
+                                    case 8:
+                                        strHtml += " 自行车定位";
+                                        break;
+                                    case 16:
+                                        strHtml += " 汽车定位";
+                                        break;
+                                    case 32:
+                                        strHtml += " 待定";
+                                        break;
+                                    default:
+
+                                        break;
+                                }
+
+                            }
+                            strHtml += "</td>" ;
+
+                                strHtml += "</tr>";
+                            }
+
+                            $("#list_content").html(strHtml);
+                            pg.pageCount = pagecount; // 定义总页数(必要)
+                            pg.page = pageindex;
+                            $("#dyntable_paginate").html(pg.getHtml());
+                        } else {
+                            art.dialog({
+                                title: '提示',
+                                content: data.Message,
+                                icon: 'warning',
+                                lock: true,
+                                ok: true
+                            });
+                        }
+                    }
+                }
+            });
+        };
+         function Edit(id) {
+
+            dialog = art.dialog.open("/Device/Edit?DeviceId=" + id, {
+                title: '@(YW.Manage.BLL.Authorize.GetUser().Dealer.DealerType >= 3 ? "编辑设备" : "查看设备")',
+                height: 600,
+                width: 500,
+                lock: true
+            });
+        }
+
+        function Del(id, name) {
+            art.dialog({
+                title: '提示',
+                content: '你确定要删除' + name + '吗?',
+                icon: 'warning',
+                lock: true,
+                ok: function() {
+                    $.ajax({
+                        type: "Post",
+                        url: "/Device/Del",
+                        data: "{'deviceId':'" + id + "'}",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(data) {
+                            if (data.Result == 1) {
+                                reload();
+                            } else {
+                                art.dialog({
+                                    title: '提示',
+                                    content: data.Message,
+                                    icon: 'warning',
+                                    lock: true,
+                                    ok: true
+                                });
+                            }
+                        },
+                        error: function(ex) {
+                            art.dialog({
+                                title: '提示',
+                                content: ex.responseText,
+                                icon: 'warning',
+                                lock: true,
+                                ok: true
+                            });
+                        }
+                    });
+                },
+                cancel: true
+            });
+
+
+        }
+
+        function Reset(id, name) {
+            art.dialog({
+                title: '提示',
+                content: '你确定要重置' + name + '吗?',
+                icon: 'warning',
+                lock: true,
+                ok: function() {
+                    $.ajax({
+                        type: "Post",
+                        url: "/Device/Reset",
+                        data: "{'deviceId':'" + id + "'}",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(data) {
+                            if (data.Result == 1) {
+                                art.dialog({
+                                    title: '提示',
+                                    content: data.Message,
+                                    icon: 'warning',
+                                    lock: true,
+                                    ok: true
+                                });
+
+                                reload();
+                            } else {
+                                art.dialog({
+                                    title: '提示',
+                                    content: data.Message,
+                                    icon: 'warning',
+                                    lock: true,
+                                    ok: true
+                                });
+                            }
+                        },
+                        error: function(ex) {
+                            art.dialog({
+                                title: '提示',
+                                content: ex.responseText,
+                                icon: 'warning',
+                                lock: true,
+                                ok: true
+                            });
+                        }
+                    });
+                },
+                cancel: true
+            });
+        }
+
+        function Sales(id, name) {
+            window.location = "/Device/Sales?serialNumber=" + name;
+        }
+
+        function Stock(id, name) {
+            art.dialog({
+                title: '提示',
+                content: '你确定要入库' + name + '吗?',
+                icon: 'warning',
+                lock: true,
+                ok: function() {
+                    $.ajax({
+                        type: "Post",
+                        url: "/Device/StockSingle",
+                        data: "{'deviceId':'" + id + "'}",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(data) {
+                            if (data.Result == 1) {
+                                reload();
+                            } else {
+                                art.dialog({
+                                    title: '提示',
+                                    content: data.Message,
+                                    icon: 'warning',
+                                    lock: true,
+                                    ok: true
+                                });
+                            }
+                        },
+                        error: function(ex) {
+                            art.dialog({
+                                title: '提示',
+                                content: ex.responseText,
+                                icon: 'warning',
+                                lock: true,
+                                ok: true
+                            });
+                        }
+                    });
+                },
+                cancel: true
+            });
+        }
+    </script>
+}
+<div class="vernav2 iconmenu">
+    <ul>
+        <li><a href="/" class="elements">设备列表</a></li>
+        @if (YW.Manage.BLL.Authorize.GetUser().Dealer.DealerType > 2)
+        {
+
+            <li><a href="/Device/Add" class="editor">导入设备</a></li>
+            <li>
+                <a href="/Device/AgentNumberList" class="elements">中间号</a>
+            </li>
+            <li>
+                <a href="/Device/AgentNumberEdit" class="editor">导入中间号</a>
+            </li>
+        }
+        else
+        {
+            <li><a href="/Device/Stock" class="editor">设备入库</a></li>
+        }
+        <li><a href="/Device/Sales" class="addons">销售设备</a></li>
+        @*        <li><a href="/Device/Add" class="support">售后服务</a></li>*@
+    </ul>
+    <a class="togglemenu"></a>
+    <br />
+    <br />
+</div>
+<!--leftmenu-->
+<div class="centercontent">
+    <div id="contentwrapper" class="contentwrapper">
+        <div class="contenttitle2">
+            <h3 style="width: 200px;">
+                设备列表</h3>
+        </div>
+        <!--contenttitle-->
+        <div class="dataTables_wrapper" id="dyntable_wrapper">
+            <div class="tableoptions">
+                <input type="text" placeholder="设备编号" id="serialNumber" style="width: 120px">
+                &nbsp;
+                <select class="radius3" id="model">
+                    <option value="">功能</option>
+                    <option value="0">000</option>
+                    <option value="1">001</option>
+                    <option value="2">010</option>
+                    <option value="3">011</option>
+                    <option value="4">100</option>
+                    <option value="5">101</option>
+                    <option value="6">110</option>
+                    <option value="7">111</option>
+                </select>
+                &nbsp;<select class="radius3" id="status">
+                    <option value="">状态</option>
+                    <option value="0">路途</option>
+                    <option value="1">入库</option>
+                    <option value="2">销售</option>
+                    @*                    <option value="3">返修</option>
+                    <option value="4">换货</option>*@
+                </select>
+                &nbsp;
+                <select class="radius3" id="active">
+                    <option value="">激活</option>
+                    <option value="True">是</option>
+                    <option value="False">否</option>
+                </select>
+                &nbsp;
+                <button class="radius3" onclick="Search()">
+                    搜索</button>
+            </div>
+            <!--tableoptions-->
+            <table cellpadding="0" cellspacing="0" border="0" id="dyntable" class="stdtable stdtablecb">
+                <colgroup>
+                    <col class="con0" />
+                    <col class="con1" />
+                    <col class="con0" />
+                    <col class="con1" />
+                    <col class="con0" />
+                    <col class="con1" />
+                    <col class="con0" />
+                    <col class="con1" />
+                    <col class="con0" />
+                    <col class="con1" />
+                    <col class="con0" />
+                    <col class="con1" />
+                    <col class="con0" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th class="head0">
+                            编号
+                        </th>
+                        <th class="head1">
+                            功能
+                        </th>
+                        <th class="head0">
+                            状态
+                        </th>
+                        <th class="head1">
+                            入库时间
+                        </th>
+                        <th class="head0">
+                            销售时间
+                        </th>
+                        <th class="head1">
+                            销售对象
+                        </th>
+                        <th class="head0">
+                            绑定
+                        </th>
+                        <th class="head1">
+                            激活
+                        </th>
+                        <th class="head0">
+                            在线
+                        </th>
+                        <th class="head1">
+                            定位
+                        </th>
+                        <th class="head0">
+                            操作
+                        </th>
+                        <th class="head1">
+                            设备备注
+                        </th>
+                        <th class="head0">
+                            设备类型
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="list_content">
+                </tbody>
+            </table>
+            <div class="dataTables_paginate paging_full_numbers" id="dyntable_paginate">
+            </div>
+        </div>
+    </div>
+    <!-- centercontent -->
+</div>

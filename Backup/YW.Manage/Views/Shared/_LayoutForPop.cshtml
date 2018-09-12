@@ -1,0 +1,27 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <link href="@Url.Content("~/Content/style.default.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Scripts/artDialog4.1.7/skins/default.css")" rel="stylesheet" type="text/css"/>
+    <script src="@Url.Content("~/Scripts/plugins/jquery-1.7.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jquery-ui-1.8.16.custom.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jquery.cookie.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jquery.uniform.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jquery.flot.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jquery.flot.resize.min.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/plugins/jquery.slimscroll.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/artDialog4.1.7/jquery.artDialog.source.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/artDialog4.1.7/plugins/iframeTools.source.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/Common.js")" type="text/javascript"></script>
+     @RenderSection("Head_Code",false)
+</head>
+<body>
+    <div>
+        @RenderBody()
+    </div>
+    <!--bodywrapper-->
+</body>
+</html>

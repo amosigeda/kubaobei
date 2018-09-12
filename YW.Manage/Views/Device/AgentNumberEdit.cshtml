@@ -1,0 +1,139 @@
+﻿@{
+    ViewBag.Title = "后台管理系统 - 添加中间号";
+    ViewBag.Module = 1;
+    
+}
+@section Head_Code
+{
+    <script src="@Url.Content("~/Scripts/ShowPages.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function() {
+            $('.submit').click(function() {
+                if (CheckTable()) {
+                    var data = $('#deviceinfoform').serialize();
+                    $.ajax({
+                        url: this.action,
+                        type: "Post",
+                        data: data,
+                        success: function(data) {
+                            if (data) {
+                                if (data.Result == 1) {
+                                    window.top.art.dialog.alert(data.Message,
+                                        function() {
+                                            art.dialog.close();
+                                            location.href = "/Device/AgentNumberList";
+                                            return true;
+                                        });
+                                } else {
+                                    ShowError(data);
+                                }
+                            }
+                        }
+                    });
+                }
+
+                return false;
+            });
+        });
+
+        function CloseOpen() {
+            art.dialog.close();
+        };
+
+        //页面判断
+        function CheckTable() {
+            var plat = $("#cloudPlatform");
+            if (!plat.val()) {
+                ShowError({ Result: 0, Message: "请选择云平台！" });
+                return false;
+            }
+            var an = $("#agentNumbers");
+            if (!an.val()) {
+                an.focus();
+                ShowError({ Result: 0, Message: "中间号列表不能为空！" });
+                return false;
+            }
+            return true;
+        };
+
+
+    </script>
+}
+
+<div class="vernav2 iconmenu">
+    <ul>
+        <li>
+            <a href="/" class="elements">设备列表</a>
+        </li>
+        @if (YW.Manage.BLL.Authorize.GetUser().Dealer.DealerType > 2)
+        {
+            <li>
+                <a href="/Device/Add" class="editor">导入设备</a>
+            </li>
+            <li>
+                <a href="/Device/AgentNumberList" class="elements">中间号</a>
+            </li>
+            <li>
+                <a href="/Device/AgentNumberEdit" class="editor">导入中间号</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="/Device/Stock" class="editor">设备入库</a>
+            </li>
+        }
+        <li>
+            <a href="/Device/Sales" class="addons">销售设备</a>
+        </li>
+        @*        <li><a href="/Device/Add" class="support">售后服务</a></li>*@
+    </ul>
+    <a class="togglemenu"></a>
+    <br/>
+    <br/>
+</div>
+<div class="centercontent">
+    <div class="contentwrapper" id="contentwrapper">
+        <div class="contenttitle2">
+            <h3 style="width: 200px;">导入中间号</h3>
+        </div>
+        <div class="subcontent" id="validation" style="display: block;">
+            @using (Html.BeginForm("AgentNumberEdit", "Device", FormMethod.Post, new {name = "deviceinfoform", id = "deviceinfoform", @class = "stdform stdform2"}))
+            {
+                <p>
+                    <label>云平台</label>
+                    <span class="field">
+                        <select name="cloudPlatform" id="cloudPlatform" size="4">
+                            <option value="2">第一组</option>
+                            <option value="1">第二组</option>
+                            <option value="3">第三组</option>
+                            <option value="4">第四组</option>
+                            <option value="5">第五组</option>
+                            <option value="6">第六组</option>
+                            <option value="7">第七组</option>
+                            <option value="8">第八组</option>
+                            <option value="9">第九组</option>
+                            <option value="10">第十组</option>
+                        </select>
+                    </span>
+                </p>
+                <p>
+                    <label>
+                        中间号列表
+                    </label>
+                    <span class="field">
+                        <textarea name="agentNumbers" id="agentNumbers" rows="12" cols="50" class="mediuminput"></textarea>
+                        <br>一行一个,格式:呼入中间号,呼出中间号
+                        <br>必须一一对应
+                    </span>
+                </p>
+
+                <p class="stdformbutton">
+                    <button type="button" class="submit radius2" style="margin-left: 20px;"> 提交</button>
+                </p>
+            }
+        </div>
+        <!--subcontent-->
+    </div>
+    <!--contentwrapper-->
+</div>

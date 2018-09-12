@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7BF5DD71-6AAA-47E4-B2DC-838C5D1A610E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>YW.Model</RootNamespace>
+    <AssemblyName>YW.Model</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MongoDB">
+      <HintPath>..\DLL\MongoDB.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\DLL\MongoDB\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=106.3.1.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.3.1\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CheckNumber.cs" />
+    <Compile Include="Entity\Address.cs" />
+    <Compile Include="Entity\BillListJson.cs" />
+    <Compile Include="Entity\AgentNumber.cs" />
+    <Compile Include="Entity\BillList.cs" />
+    <Compile Include="Entity\CallOutACRService.cs" />
+    <Compile Include="Entity\CallOutService.cs" />
+    <Compile Include="Entity\CancelRequest.cs" />
+    <Compile Include="Entity\CloudPlatform.cs" />
+    <Compile Include="Entity\CloudPlatformInfo.cs" />
+    <Compile Include="Entity\Constants.cs" />
+    <Compile Include="Entity\DeviceFriend.cs" />
+    <Compile Include="Entity\LocationModel.cs" />
+    <Compile Include="Entity\RespResult.cs" />
+    <Compile Include="Entity\SetBindNum.cs" />
+    <Compile Include="Entity\CommAnalysisResponse.cs" />
+    <Compile Include="Entity\SetIvrType.cs" />
+    <Compile Include="Entity\Weather.cs" />
+    <Compile Include="Entity\WifiData.cs" />
+    <Compile Include="Entity\DeviceTq.cs" />
+    <Compile Include="Entity\YWLBS.cs" />
+    <Compile Include="Entity\Count.cs" />
+    <Compile Include="Entity\Dealer.cs" />
+    <Compile Include="Entity\DealerDevice.cs" />
+    <Compile Include="Entity\GeoFence.cs" />
+    <Compile Include="Entity\SchoolGuardian.cs" />
+    <Compile Include="Entity\Project.cs" />
+    <Compile Include="Entity\DealerUser.cs" />
+    <Compile Include="Entity\DealerNotification.cs" />
+    <Compile Include="Entity\DevicePhoto.cs" />
+    <Compile Include="Location.cs" />
+    <Compile Include="Manage\Count.cs" />
+    <Compile Include="Manage\DealerDevice.cs" />
+    <Compile Include="Manage\DealerDeviceList.cs" />
+    <Compile Include="Manage\DealerUserList.cs" />
+    <Compile Include="Manage\DealerNotificationList.cs" />
+    <Compile Include="Manage\PageList.cs" />
+    <Compile Include="Manage\SystemCount.cs" />
+    <Compile Include="NotificationCount.cs" />
+    <Compile Include="SendType.cs" />
+    <Compile Include="Entity\Device.cs" />
+    <Compile Include="Entity\DeviceContact.cs" />
+    <Compile Include="Entity\DeviceException.cs" />
+    <Compile Include="Entity\DeviceSet.cs" />
+    <Compile Include="Entity\DeviceSMS.cs" />
+    <Compile Include="Entity\DeviceState.cs" />
+    <Compile Include="Entity\DeviceVoice.cs" />
+    <Compile Include="Entity\Feedback.cs" />
+    <Compile Include="Entity\Notification.cs" />
+    <Compile Include="Entity\SystemInfo.cs" />
+    <Compile Include="Entity\User.cs" />
+    <Compile Include="Entity\UserDevice.cs" />
+    <Compile Include="Entity\UserLog.cs" />
+    <Compile Include="Entity\UserNotification.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DeviceModel.cs" />
+    <Compile Include="DeviceType.cs" />
+    <Compile Include="LBSWIFI.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

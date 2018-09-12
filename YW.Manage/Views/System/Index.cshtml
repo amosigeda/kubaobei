@@ -1,0 +1,114 @@
+﻿@model YW.Model.Manage.SystemCount
+@{
+    ViewBag.Title = "后台管理系统 - 系统管理";
+    ViewBag.Module = 5;
+}
+@section Head_Code
+{
+    <script src="@Url.Content("~/Scripts/ShowPages.js")" type="text/javascript"></script>
+}
+<div class="vernav2 iconmenu">
+    <ul>
+        <li><a href="/System/" class="elements">运行情况</a></li>
+        <li><a href="/System/Notification" class="addons">公告推送</a></li>
+        @if (YW.Manage.BLL.Authorize.GetUser().DealerUser.UserType == 3)
+        {
+            <li><a href="/System/Project" class="editor">项目管理</a></li>
+            <li><a href="/System/Manage" class="widgets">系统管理</a></li>
+        }
+    </ul>
+    <a class="togglemenu"></a>
+    <br />
+    <br />
+</div>
+<!--leftmenu-->
+<div class="centercontent">
+    <div id="contentwrapper" class="contentwrapper">
+        <div class="contenttitle2">
+            <h3 style="width: 200px;">
+                运行情况</h3>
+        </div>
+        <table class="stdtable overviewtable" border="0" cellspacing="0" cellpadding="0">
+            <colgroup>
+                <col width="10%" class="con0">
+                <col width="10%" class="con1">
+                <col width="10%" class="con0">
+                <col width="10%" class="con1">
+                <col width="10%" class="con0">
+                <col width="10%" class="con1">
+                <col width="10%" class="con0">
+                <col width="5%" class="con1">
+                <col width="10%" class="con0">
+                <col width="5%" class="con1">
+                <col width="5%" class="con0">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th class="head0">
+                        设备在线数
+                    </th>
+                    <th class="head1">
+                        解析基站WIFI成功数
+                    </th>
+                    <th class="head0">
+                        解析基站WIFI命中数
+                    </th>
+                    <th class="head1">
+                        解析基站WIFI失败数
+                    </th>
+                    <th class="head0">
+                        解析WIFI基站总数
+                    </th>
+                    <th class="head1">
+                        解析地址名称成功数
+                    </th>
+                    <th class="head0">
+                        解析地址名称总数
+                    </th>
+                    <th class="head1">
+                        定位队列数
+                    </th>
+                    <th class="head0">
+                        基站WIFI队列数
+                    </th>
+                    <th class="head1">
+                        轨迹队列数
+                    </th>
+                    <th class="head0">
+                        短信数
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="center">@Model.Online
+                    </td>
+                    <td class="center">@Model.LbsAndWifi
+                    </td>
+                    <td class="center">@Model.LbsAndWifiCache
+                    </td>
+                    <td class="center">@Model.LbsAndWifiFail
+                    </td>
+                    <td class="center">@Model.LbsAndWifiTotal
+                    </td>
+                    <td class="center">@Model.Address
+                    </td>
+                    <td class="center">@Model.AddressTotal
+                    </td>
+                    <td class="center">@Model.DoLocationQueueCount
+                    </td>
+                    <td class="center">@Model.DoLocationQueueLbsWifiCount
+                    </td>
+                    <td class="center">@Model.InsertHistoryQueueCount
+                    </td>
+                    <td class="center">@Model.SMS
+                    </td>
+
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- centercontent -->
+</div>
